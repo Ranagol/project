@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
 
     public function projects(){
-        return $this->hasMany(Project::class);// in the end, this will be return $this->project form. So this explaines why are we using $this. A user can have many projects, hence the hasMany method.
+        return $this->hasMany(Project::class, 'owner_id');// in the end, this will be return $this->project form. So this explaines why are we using $this. A user can have many projects, hence the hasMany method.
     }
 
 

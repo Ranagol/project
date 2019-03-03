@@ -29,12 +29,10 @@
 		<div class="control">
 			<button type="submit" class="button is-link">Update project</button>
 		</div>
-		
 	</div>
-
 </form>
 
-
+@include('errors')
 
 <!--THE DELETE BUTTON-->
 <form method="POST" action="/projects/{{ $project->id }}">

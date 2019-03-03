@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Project;//this was manually inserted!
 use Illuminate\Filesystem\Filesystem;
+use App\Mail\ProjectCreated;
+
 
 class ProjectsController extends Controller
 {
@@ -13,12 +15,12 @@ class ProjectsController extends Controller
 
 
     public function index(){
-    	$id = auth()->id();//Losi solution for the admin autorization
-        if ($id == 5) {//Losi solution for the admin autorization
-            $projects = Project::all();//Losi solution for the admin autorization
-        } else {//Losi solution for the admin autorization
-            //$projects = Project::where('owner_id', $id)->get();//reminder: the Project.php is a model that we created. Here we are fetching  db records, and saving them in the $project variable. Jeff: where the owner id is = to the authenticated users id. Where is a conditional in Eloqent. All this is similar to "select * from projects where owner_id = 4"
-            $projects = auth()->user()->projects;
+    	$id = auth()->id();//Losi 
+        if ($id == 5) {//Losi 
+            $projects = Project::all();//Losi 
+        } else {//Losi solution. If the user is admin (admin is id=5), then show him all the project. In every other case...
+           
+            $projects = auth()->user()->projects;//what we are saying here: whoever signed in, give me his projects. project() is a method from User.php, and kill me if I know why the fuck it does not need the ().
         
         }
     	return view('projects.index', compact('projects'));
@@ -42,16 +44,14 @@ class ProjectsController extends Controller
 
     public function store(){
     	
-        $attributesValidated = request()->validate([
-            'title' => ['required', 'min:3'],
-            'description' => ['required', 'min:3']
-        ]);//this part here is doing only the validation. The request() is getting the title and the description from the uri, and the validate() checks them. If the validation is OK, then we proceed with the new project creating in the db. Remeber, the title and the description are coming from the uri.
+        $attributesValidated = $this->validateProject();//this part is validating the title and the description from the uri. The validateProject() method is also in this file, at the bottom.
 
-        $attributesValidated['owner_id'] = auth()->id();//here we adding another item to the $attributesValidated. But, this is not coming from the uri, so we must do it separatedly, like this. auth()-> id() will return an authenticated user id, example: 4.
+        $attributesValidated['owner_id'] = auth()->id();//here we are adding another item to the $attributesValidated. But, this is not coming from the uri, so we must do it separatedly, like this. auth()-> id() will return an authenticated user id, example: 4.
 
+        $project = Project::create($attributesValidated);//create this project title and project description in the db.
 
+        \Mail::to($project->owner->email)->send( new ProjectCreated($project)); // we will also send an email to the user with a message like "Hey your project has been created". With this part here 'new ProjectCreated($project))' we are creating a new mailable instance.
 
-        Project::create($attributesValidated);
     	return redirect('/projects');//redirect us back to /projects
     }
 
@@ -61,14 +61,30 @@ class ProjectsController extends Controller
     }//Reminder: we deifned the edit route like this: Route::get('/projects/{project}/edit', 'ProjectsController@edit');// This will edit a project. The {project} will be the number of the ID record, or the $id. Laravel is able to convert the {project} (aka whatever id number the user typed there) to the $id. We use the $id for db record finding.
 
 
+
     public function update(Project $project){
-        $project->update(request(['title', 'description']));
+        
+        $project->update($this->validateProject());
         return redirect('/projects');
     }
+
+
+
 
 
     public function destroy(Project $project){
         $project->delete();
         return redirect('/projects');
     }
+
+
+    protected function validateProject(){
+        return request()->validate([
+            'title' => ['required', 'min:3'],
+            'description' => ['required', 'min:3']
+        ]);
+    }
+
+
+
 }
