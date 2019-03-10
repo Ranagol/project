@@ -2,13 +2,27 @@
 
 namespace App;
 
+use App\Mail\ProjectCreated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 
 //What can this project model do? It can ad a task.
 
 class Project extends Model
 {
     protected $guarded = [];//these must not be mass assigned. And we leave it empty. This with this $guarded property we are stating what columns in the db can be changed by the user. (Right now, there is no limitation)
+
+    
+    protected static function boot(){
+        
+        parent::boot();//because we are overriding a method that is actually in the Model class, we are making sure that we call that method from the Model class, by this parent:: part.
+        
+        static::created(function($project){//we will listen for when this model is created (aka $when this $project is inserted into the db. With the created method here we want to hook in into the created event). And we pass a closure here (an anonymus function). This code will be only executed when a new project is created and inserted into the db. That means, that here we can put our codes about sending an email to a user, when he has created a new project.
+
+            Mail::to($project->owner->email)->send(new ProjectCreated($project)); // we will also send an email to the user with a message like "Hey your project has been created". With this part here 'new ProjectCreated($project))' we are creating a new mailable instance. <--because of this line here we must import our mail class: use Illuminate\Support\Facades\Mail;. Also, we must import our ProjectCreated class too: use App\Mail\ProjectCreated;
+        });
+
+    }
 
     
     public function owner(){

@@ -48,9 +48,9 @@ class ProjectsController extends Controller
 
         $attributesValidated['owner_id'] = auth()->id();//here we are adding another item to the $attributesValidated. But, this is not coming from the uri, so we must do it separatedly, like this. auth()-> id() will return an authenticated user id, example: 4.
 
-        $project = Project::create($attributesValidated);//create this project title and project description in the db.
+        Project::create($attributesValidated);//create this project title and project description in the db.
 
-        \Mail::to($project->owner->email)->send( new ProjectCreated($project)); // we will also send an email to the user with a message like "Hey your project has been created". With this part here 'new ProjectCreated($project))' we are creating a new mailable instance.
+        
 
     	return redirect('/projects');//redirect us back to /projects
     }
@@ -84,7 +84,4 @@ class ProjectsController extends Controller
             'description' => ['required', 'min:3']
         ]);
     }
-
-
-
 }
