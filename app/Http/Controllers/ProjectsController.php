@@ -48,9 +48,9 @@ class ProjectsController extends Controller
 
         $attributesValidated['owner_id'] = auth()->id();//here we are adding another item to the $attributesValidated. But, this is not coming from the uri, so we must do it separatedly, like this. auth()-> id() will return an authenticated user id, example: 4.
 
-        Project::create($attributesValidated);//create this project title and project description in the db.
+        $project = Project::create($attributesValidated);//create this project title and project description in the db.
 
-        
+        event(new ProjectCreated($project));  //here we are using an event helper (that ithe event()). We are just importing the event with the ProjectCreated. As argument we are using the newly created $project. We are announcing here for the whole system that an event was created. We can hook in into this event from everywhere.
 
     	return redirect('/projects');//redirect us back to /projects
     }

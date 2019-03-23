@@ -4,6 +4,9 @@
 <p>
 	<h3 class="title">Projects</h3>
 </p>
+<p>
+	You can edit or delete your projects by clicking on it.
+</p>
 	
 
 	<ul>

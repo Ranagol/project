@@ -2,20 +2,22 @@
 
 @section('content')
 
-	<h1 class="title">Project title: {{ $project->title }}</h1>
+	<h4>Project title: {{ $project->title }}</h4>
 
-	<div class="content">Project ID: {{ $project->id}}</div>
+	<div >Your project ID: {{ $project->id}}</div>
 
-	<div class="content">Project description: {{ $project->description}}
+	<div >Your project description: {{ $project->description}}
+	<br>
+	<br>
 		<p>
-			<a href="/projects/{{ $project->id }}/edit">Edit project title or description</a>
+			<a href="/projects/{{ $project->id }}/edit">Edit project</a>
 		</p>
 	</div>
 
 <!--TASKS LIST-->
 	@if($project->tasks->count())<!--If there is at least one task, so the count() functions counting can result at least with 1, then...-->
 		<div class="box">
-			<h3 class="title">Our tasks for this project are:</h3>
+			<h4>Your tasks for this project are:</h4>
 				
 				@foreach($project->tasks as $task)
 					<div>
@@ -42,7 +44,7 @@
 <form method="POST" action="/projects/{{ $project->id }}/tasks" class="box">
 	@csrf
 	<div class="field" >
-		<label class="label" for="description">New task</label>
+		<label class="label" for="description">Add new tasks for your project</label>
 		<div class="control">
 			<input type="text" class="input" name="description" placeholder="New task" required="">
 		</div>

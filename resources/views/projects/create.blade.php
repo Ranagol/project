@@ -3,7 +3,7 @@
 
 @section('content')
 
-	<h1>Create a new project</h1>
+	<h3>Create a new project</h3>
 	<br>
 	<form method="POST" action="/projects">
 
@@ -22,7 +22,7 @@
 
 
 		<div>
-			<button type="submit">Create project</button>
+			<button class="btn btn-success" type="submit">Create project</button>
 		</div>
 
 

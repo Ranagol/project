@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@include('nav')
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -15,7 +17,7 @@
                     @endif
 
                     You are logged in!
-                    <li><a href="/projects">Projects</a></li>
+                    <a href="/projects">Now go to your projects.</a>
                 </div>
             </div>
         </div>
